@@ -1,16 +1,11 @@
-import { Body, Controller, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, NotFoundException } from "@nestjs/common";
 
 import { NewMessage } from "./data-transfer-objects/new-message.dto";
 import MessagesService from "./messages.service";
 
 @Controller("messages")
 export class MessagesController {
-  private service: MessagesService;
-
-  constructor() {
-    // @TODO : Use dependency injection to inject the MessagesService.
-    this.service = new MessagesService();
-  }
+  constructor(public service: MessagesService) {}
 
   @Get()
   list() {
@@ -18,8 +13,9 @@ export class MessagesController {
   }
 
   @Get(":id")
-  show(@Param("id") id: string) {
-    return this.service.get(parseInt(id, 10));
+  async show(@Param("id") id: string) {
+    const message = this.service.get(parseInt(id, 10));
+    return message || new NotFoundException(`No message with the identifier ${id} was found.`);
   }
 
   @Post()

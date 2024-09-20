@@ -1,14 +1,13 @@
-import { NewMessage } from "./data-transfer-objects/new-message.dto";
+import { Injectable } from "@nestjs/common";
+
 import MessagesRepository from "./messages.repository";
+import { NewMessage } from "./data-transfer-objects/new-message.dto";
 import { Message } from "./data-transfer-objects/message.dto";
 
-class MessagesService {
-  private repository: MessagesRepository;
 
-  constructor() {
-    // @TODO : Use dependency injection to inject the MessagesRepository.
-    this.repository = new MessagesRepository();
-  }
+@Injectable()
+class MessagesService {
+  constructor(public repository: MessagesRepository) {}
 
   public get(id: number) {
     return this.repository.read(id);

@@ -1,6 +1,9 @@
 import { readFile, writeFile } from "fs/promises";
+import { Injectable } from "@nestjs/common";
 
 import { Message } from "./data-transfer-objects/message.dto";
+
+@Injectable()
 class MessagesRepository {
   private messages: { [key: number]: Message } = {};
 
@@ -11,12 +14,12 @@ class MessagesRepository {
   }
 
   private async loadMessages() {
-    const file = await readFile("/data/messages.json", "utf-8");
+    const file = await readFile("./data/messages.json", "utf-8");
     this.messages = JSON.parse(file);
   }
 
   private async saveMessages() {
-    await writeFile("/data/messages.json", JSON.stringify(this.messages, null, 2));
+    await writeFile("./data/messages.json", JSON.stringify(this.messages, null, 2));
   }
 
   public read(id: number): Message {
