@@ -37,3 +37,9 @@ No license file is present in this repository.
 ## Contact
 
 Dyrits - https://github.com/Dyrits
+
+## Dependency verification (November 2026)
+
+Targeted lockfile updates fix the form-data boundary randomness and proxy-addr trust-subnet advisories. Other dependency advisories remain, including high-severity findings; this is not a security clearance or a supported production-stack claim. Use Node.js 26.13.0 LTS and a clean `npm ci`, then `npm run build` and `npm run test:dependencies`.
+
+The HTTP check uses a temporary JSON database and verifies message creation, reading, listing, persistence and invalid-input rejection. It leaves the repository data unchanged. The original default unit-test fixture still fails because its testing module does not provide MessagesService. No hosted service was tested.
