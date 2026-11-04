@@ -41,9 +41,13 @@ const kind = process.env.SMOKE_KIND;
     const http = request(app.getHttpServer());
     if (kind === 'messages') {
       await http.get('/messages').expect(200).expect([]);
+      await http.get('/messages?filter[content]=ignored').expect(200).expect([]);
+      await http.get('/unknown-route').expect(404);
+      await http.post('/messages').set('Content-Type', 'application/json').send('{broken').expect(400);
       await http.post('/messages').send({ content: '', author: '' }).expect(400);
-      const created = await http.post('/messages').send({ content: 'Scratch message', author: 'Smoke' }).expect(201);
+      const created = await http.post('/messages').send({ content: 'Scratch message', author: 'Smoke', ignored: 'remove me' }).expect(201);
       assert.equal(created.body.content, 'Scratch message');
+      assert.equal(created.body.ignored, undefined);
       const read = await http.get('/messages/' + created.body.id).expect(200);
       assert.equal(read.body.author, 'Smoke');
       const list = await http.get('/messages').expect(200);
